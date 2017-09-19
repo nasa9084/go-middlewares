@@ -3,6 +3,7 @@ package middlewares_test
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	middlewares "github.com/nasa9084/go-middlewares"
@@ -33,7 +34,7 @@ func TestNew(t *testing.T) {
 
 func TestApply(t *testing.T) {
 	candidates := []struct {
-		name string
+		name   string
 		mwset  middlewares.Middlewareset
 		target http.Handler
 		expect http.Handler
@@ -49,5 +50,33 @@ func TestApply(t *testing.T) {
 			t.Errorf(c.msg)
 			return
 		}
+	}
+}
+
+func newPrefixMw(prefix string) middlewares.Middleware {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(prefix))
+			h.ServeHTTP(w, r)
+		})
+	}
+}
+
+func TestApplyOrder(t *testing.T) {
+	mwset := middlewares.New(newPrefixMw("1"), newPrefixMw("2"), newPrefixMw("3"))
+	applied := mwset.Apply(testHandler)
+
+	w := httptest.NewRecorder()
+	r, err := http.NewRequest(`GET`, `/`, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	applied.ServeHTTP(w, r)
+
+	body := w.Body.String()
+	if body != "321hello, world\n" {
+		t.Errorf("\"%s\" != \"321hello, world\n\"", body)
+		return
 	}
 }

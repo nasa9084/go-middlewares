@@ -109,3 +109,21 @@ func TestExtend(t *testing.T) {
 		}
 	}
 }
+
+func TestApply(t *testing.T) {
+	mwset := middlewares.New(newPrefixMw("1"), newPrefixMw("2"), newPrefixMw("3"))
+	applied := mwset.Apply(testHandler)
+	w := httptest.NewRecorder()
+	r, err := http.NewRequest(`GET`, `/`, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	applied.ServeHTTP(w, r)
+
+	body := w.Body.String()
+	if body != "123"+hello {
+		t.Errorf(`"%s" != "%s"`, body, "123"+hello)
+		return
+	}
+}

@@ -36,7 +36,7 @@ func TestLogger(t *testing.T) {
 
 	// response log test
 	responseLog := strings.SplitN(logline[1], " ", 3)[2]
-	expectResponseLog := "200 OK"
+	expectResponseLog := "  => 200 OK"
 	if responseLog != expectResponseLog {
 		t.Errorf(`"%s" != "%s"`, responseLog, expectResponseLog)
 		return

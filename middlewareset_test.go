@@ -77,8 +77,35 @@ func TestApplyOrder(t *testing.T) {
 	applied.ServeHTTP(w, r)
 
 	body := w.Body.String()
-	if body != "123" + hello {
+	if body != "123"+hello {
 		t.Errorf(`"%s" != "%s%s"`, body, "123", hello)
 		return
+	}
+}
+
+func TestExtend(t *testing.T) {
+	basemwset := middlewares.New(newPrefixMw("1"), newPrefixMw("2"), newPrefixMw("3"))
+	candidates := []struct {
+		mwset  middlewares.Middlewareset
+		expect string
+	}{
+		{basemwset, "123" + hello},
+		{basemwset.Extend(newPrefixMw("4")), "1234" + hello},
+	}
+	for _, c := range candidates {
+		applied := c.mwset.Apply(testHandler)
+
+		w := httptest.NewRecorder()
+		r, err := http.NewRequest(`GET`, `/`, nil)
+		if err != nil {
+			panic(err)
+		}
+
+		applied.ServeHTTP(w, r)
+		body := w.Body.String()
+		if body != c.expect {
+			t.Errorf(`"%s" != "%s"`, body, c.expect)
+			return
+		}
 	}
 }

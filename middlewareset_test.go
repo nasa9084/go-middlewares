@@ -16,6 +16,7 @@ var testHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 })
 
 func testHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(200)
 	w.Write([]byte(hello))
 }
 

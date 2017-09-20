@@ -34,7 +34,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestApply(t *testing.T) {
+func TestApplyNil(t *testing.T) {
 	candidates := []struct {
 		name   string
 		mwset  middlewares.Middlewareset

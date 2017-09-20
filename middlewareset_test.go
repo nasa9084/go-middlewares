@@ -9,8 +9,10 @@ import (
 	middlewares "github.com/nasa9084/go-middlewares"
 )
 
+const hello = "hello, world"
+
 var testHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello, world\n"))
+	w.Write([]byte(hello))
 })
 
 func equalFunc(fn1, fn2 interface{}) bool {
@@ -75,8 +77,8 @@ func TestApplyOrder(t *testing.T) {
 	applied.ServeHTTP(w, r)
 
 	body := w.Body.String()
-	if body != "321hello, world\n" {
-		t.Errorf("\"%s\" != \"321hello, world\n\"", body)
+	if body != "123" + hello {
+		t.Errorf(`"%s" != "%s%s"`, body, "123", hello)
 		return
 	}
 }

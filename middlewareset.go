@@ -25,8 +25,8 @@ func (mwset Middlewareset) Apply(h http.Handler) http.Handler {
 	if h == nil {
 		h = http.DefaultServeMux
 	}
-	for _, mw := range mwset {
-		h = mw(h)
+	for i := len(mwset) - 1; i >= 0; i-- {
+		h = mwset[i](h)
 	}
 	return h
 }

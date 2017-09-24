@@ -37,7 +37,8 @@ func Logger(h http.Handler) http.Handler {
 		h.ServeHTTP(&lrw, r)
 		log.Printf("  => %d %s", lrw.status, http.StatusText(lrw.status))
 		if lrw.respBody != nil {
-			for _, line := range strings.Split(string(lrw.respBody), "\n") {
+			body := strings.TrimSuffix(string(lrw.respBody), "\n")
+			for _, line := range strings.Split(body, "\n") {
 				log.Printf("  > %s", line)
 			}
 		}

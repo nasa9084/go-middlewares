@@ -45,7 +45,7 @@ func TestNew(t *testing.T) {
 func TestApplyNil(t *testing.T) {
 	candidates := []struct {
 		name   string
-		mwset  middlewares.Middlewareset
+		mwset  middlewares.Set
 		target http.Handler
 		expect http.Handler
 		msg    string
@@ -94,7 +94,7 @@ func TestApplyOrder(t *testing.T) {
 func TestExtend(t *testing.T) {
 	basemwset := middlewares.New(newPrefixMw("1"), newPrefixMw("2"), newPrefixMw("3"))
 	candidates := []struct {
-		mwset  middlewares.Middlewareset
+		mwset  middlewares.Set
 		expect string
 	}{
 		{basemwset, "123" + hello},

@@ -2,26 +2,26 @@ package middlewares
 
 import "net/http"
 
-// Middlewareset is a set of Middlewares
-type Middlewareset []Middleware
+// Set is a set of Middlewares
+type Set []Middleware
 
 // New returns a new Middlewareset
-func New(mws ...Middleware) Middlewareset {
+func New(mws ...Middleware) Set {
 	return mws
 }
 
 // NewSubgroup creates new sub-Middlewareset
-func (mwset Middlewareset) NewSubgroup(mws ...Middleware) Middlewareset {
+func (mwset Set) NewSubgroup(mws ...Middleware) Set {
 	return append(mwset, mws...)
 }
 
 // Extend is an alias to NewSubgroup
-func (mwset Middlewareset) Extend(mws ...Middleware) Middlewareset {
+func (mwset Set) Extend(mws ...Middleware) Set {
 	return mwset.NewSubgroup(mws...)
 }
 
 // Apply middlewares to handler
-func (mwset Middlewareset) Apply(h http.Handler) http.Handler {
+func (mwset Set) Apply(h http.Handler) http.Handler {
 	if h == nil {
 		h = http.DefaultServeMux
 	}
@@ -32,6 +32,6 @@ func (mwset Middlewareset) Apply(h http.Handler) http.Handler {
 }
 
 // ApplyFunc applies middlewares to HandlerFunc
-func (mwset Middlewareset) ApplyFunc(hfn http.HandlerFunc) http.Handler {
+func (mwset Set) ApplyFunc(hfn http.HandlerFunc) http.Handler {
 	return mwset.Apply(hfn)
 }

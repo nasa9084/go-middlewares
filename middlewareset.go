@@ -25,8 +25,8 @@ func (mwset Set) Apply(h http.Handler) http.Handler {
 	if h == nil {
 		h = http.DefaultServeMux
 	}
-	for i := len(mwset) - 1; i >= 0; i-- {
-		h = mwset[i](h)
+	for _, mw := range reverse(mwset) {
+		h = mw(h)
 	}
 	return h
 }
@@ -34,4 +34,13 @@ func (mwset Set) Apply(h http.Handler) http.Handler {
 // ApplyFunc applies middlewares to HandlerFunc
 func (mwset Set) ApplyFunc(hfn http.HandlerFunc) http.Handler {
 	return mwset.Apply(hfn)
+}
+
+func reverse(mws []Middleware) []Middleware {
+	length := len(mws)
+	n := make([]Middleware, length)
+	for i := 0; i < length; i++ {
+		n[length-i-1] = mws[i]
+	}
+	return n
 }

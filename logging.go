@@ -42,7 +42,7 @@ func Logger(h http.Handler) http.Handler {
 		}
 		logger.Printf("%s %s", r.Method, r.URL.RequestURI())
 		h.ServeHTTP(&lrw, r)
-		log.Printf("  => %d %s", lrw.status, http.StatusText(lrw.status))
+		logger.Printf("  => %d %s", lrw.status, http.StatusText(lrw.status))
 		if lrw.respBody != nil {
 			body := strings.TrimSuffix(string(lrw.respBody), "\n")
 			for _, line := range strings.Split(body, "\n") {

@@ -13,7 +13,7 @@ import (
 
 func TestLogger(t *testing.T) {
 	buf := bytes.Buffer{}
-	log.SetOutput(&buf)
+	middlewares.SetLogger(log.New(&buf, "", log.LstdFlags))
 
 	w := httptest.NewRecorder()
 	r, err := http.NewRequest(`GET`, `/`, nil)

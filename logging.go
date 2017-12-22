@@ -3,8 +3,15 @@ package middlewares
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
+
+var logger *log.Logger
+
+func init() {
+	logger = log.New(os.Stdout, "", log.LstdFlags)
+}
 
 type logResponseWriter struct {
 	http.ResponseWriter
@@ -33,14 +40,19 @@ func Logger(h http.Handler) http.Handler {
 			ResponseWriter: w,
 			status:         200,
 		}
-		log.Printf("%s %s", r.Method, r.URL.RequestURI())
+		logger.Printf("%s %s", r.Method, r.URL.RequestURI())
 		h.ServeHTTP(&lrw, r)
 		log.Printf("  => %d %s", lrw.status, http.StatusText(lrw.status))
 		if lrw.respBody != nil {
 			body := strings.TrimSuffix(string(lrw.respBody), "\n")
 			for _, line := range strings.Split(body, "\n") {
-				log.Printf("  > %s", line)
+				logger.Printf("  > %s", line)
 			}
 		}
 	})
+}
+
+// SetLogger replaces package default logger with your configured logger.
+func SetLogger(l *log.Logger) {
+	logger = l
 }
